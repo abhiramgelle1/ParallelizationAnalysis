@@ -14,23 +14,18 @@ parallel-algorthims-programming-assignment/
 │   ├── performance_test.c
 │   └── Makefile
 ├── docs/                   # Documentation
-│   ├── README.md          # Detailed documentation
 │   ├── Report.md          # Analysis report
-│   ├── START_HERE.md      # Begin here!
-│   ├── QUICK_START.md     # Fast execution guide
-│   ├── STEP_BY_STEP_GUIDE.md
-│   ├── EXECUTION_GUIDE.md
-│   ├── MPI_EXECUTION_GUIDE.md
-│   ├── ALTERNATIVE_APPROACH_GUIDE.md
+│   ├── EXECUTION_COMMANDS.md
 │   └── Programming Assignment.pdf
 ├── tests/                  # Test graph files
-│   ├── test_graph_small.txt
-│   └── test_graph_medium.txt
+│   ├── test_assignment_example.txt
+│   ├── test1.txt
+│   ├── test_medium_500_10000.txt
+│   ├── test_large_80000_500000.txt
+│   └── custom_test_case.txt
 ├── scripts/                # Test and comparison scripts
 │   ├── test_script.sh
-│   ├── test_script.bat
-│   ├── compare_all.sh
-│   └── compare_all.bat
+│   └── compare_all.sh
 └── build/                  # Compiled executables (created after compilation)
 ```
 
@@ -56,37 +51,14 @@ To run a quick test:
 # From src directory
 make test
 
-# Or manually
-../build/graph_generator 100 500 10 ../tests/test.txt
-../build/dijkstra_sequential ../tests/test.txt 0
-../build/dijkstra_openmp ../tests/test.txt 0 4
+# Or manually from project root
+./build/dijkstra_sequential tests/test_assignment_example.txt 0
+./build/dijkstra_openmp tests/test_assignment_example.txt 0 4
 ```
-
-## Documentation
-
-There's quite a bit of documentation in the docs folder. Here's what's there:
-
-Start Here:
-- `docs/START_HERE.md` - Overview and guide selection
-- `docs/QUICK_START.md` - Fast 60-90 minute execution guide
-
-Detailed Guides:
-- `docs/README.md` - Complete project documentation
-- `docs/STEP_BY_STEP_GUIDE.md` - Detailed step-by-step instructions
-- `docs/EXECUTION_GUIDE.md` - Platform-specific help
-- `docs/MPI_EXECUTION_GUIDE.md` - MPI implementation guide
-- `docs/ALTERNATIVE_APPROACH_GUIDE.md` - Testing both OpenMP and MPI
-
-Command Reference:
-- `EXECUTION_COMMANDS.md` - Complete command reference for OpenMP and MPI
-
-Reports:
-- `docs/Report.md` - Detailed analysis with proofs
-- `docs/SUBMISSION_CHECKLIST.md` - Pre-submission checklist
 
 ## Compilation
 
-From the src directory, you can compile everything:
+From the src directory:
 
 ```bash
 cd src
@@ -132,39 +104,27 @@ Generate a test graph:
 ```bash
 # From project root
 ./build/graph_generator 1000 5000 10 tests/my_graph.txt
-
-# Or from src directory
-../build/graph_generator 1000 5000 10 ../tests/my_graph.txt
 ```
 
 Run the sequential version:
 
 ```bash
 # From project root
-./build/dijkstra_sequential tests/test_graph_small.txt 0
-
-# Or from src directory
-../build/dijkstra_sequential ../tests/test_graph_small.txt 0
+./build/dijkstra_sequential tests/test_assignment_example.txt 0
 ```
 
 Run OpenMP version with 4 threads:
 
 ```bash
 # From project root
-./build/dijkstra_openmp tests/test_graph_small.txt 0 4
-
-# Or from src directory
-../build/dijkstra_openmp ../tests/test_graph_small.txt 0 4
+./build/dijkstra_openmp tests/test_assignment_example.txt 0 4
 ```
 
 Run MPI version with 4 processes:
 
 ```bash
 # From project root
-mpirun -np 4 ./build/dijkstra_mpi tests/test_graph_small.txt 0
-
-# Or from src directory
-mpirun -np 4 ../build/dijkstra_mpi ../tests/test_graph_small.txt 0
+mpirun -np 4 ./build/dijkstra_mpi tests/test_assignment_example.txt 0
 ```
 
 Compare all implementations:
@@ -173,13 +133,10 @@ Compare all implementations:
 # From project root
 cd scripts
 chmod +x compare_all.sh
-./compare_all.sh ../tests/test_graph_small.txt 0 4 4
-
-# Or from scripts directory
-./compare_all.sh ../tests/test_graph_small.txt 0 4 4
+./compare_all.sh ../tests/test_assignment_example.txt 0 4 4
 ```
 
-For complete command reference, see `EXECUTION_COMMANDS.md`.
+For complete command reference, see `docs/EXECUTION_COMMANDS.md`.
 
 ## Testing
 
@@ -198,11 +155,11 @@ chmod +x test_script.sh
 ./test_script.sh
 ```
 
-Compare all implementations:
+Performance comparison:
 
 ```bash
-cd scripts
-./compare_all.sh ../tests/test_graph_small.txt 0 4 4
+# From project root
+./build/performance_test tests/test_assignment_example.txt 4
 ```
 
 ## Project Overview
@@ -234,20 +191,20 @@ Source Code (src/):
 - `performance_test.c` - Performance comparison tool
 
 Documentation (docs/):
-- See documentation files listed above
+- `Report.md` - Detailed analysis with proofs
+- `EXECUTION_COMMANDS.md` - Complete command reference
 
 Test Files (tests/):
-Available inputs in tests/:
-- test_assignment_example.txt (5 nodes, 6 edges) - matches assignment example screenshot
-- test_graph_small.txt (legacy sample)
-- test_graph_medium.txt (legacy sample)
-- test_medium_500_10000.txt (randomly generated)
-- test_large_80000_500000.txt (stress test)
+- `test_assignment_example.txt` - 5 nodes, 6 edges (matches assignment example)
+- `test1.txt` - 2000 nodes, 15000 edges
+- `test_medium_500_10000.txt` - 500 nodes, 10000 edges
+- `test_large_80000_500000.txt` - 80000 nodes, 500000 edges
+- `custom_test_case.txt` - User-generated test cases
 - Generate your own with `graph_generator`
 
 Scripts (scripts/):
-- Automated testing scripts
-- Comparison tools
+- `test_script.sh` - Automated testing script
+- `compare_all.sh` - Comparison tool for all implementations
 
 ## Assignment Requirements
 
@@ -263,8 +220,7 @@ The project includes:
 
 ## Troubleshooting
 
-See `docs/EXECUTION_GUIDE.md` for:
+See `docs/EXECUTION_COMMANDS.md` for:
 - Platform-specific setup
 - Common errors and solutions
 - Compilation issues
-
