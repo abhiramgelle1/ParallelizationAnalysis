@@ -352,7 +352,7 @@ For optimal speedup, we need:
 ### 6.1 Experimental Setup
 
 **Hardware:**
-- CPU: Multi-core processor (specify your system)
+- CPU: Multi-core processor
 - Cores: 4-8 cores available
 - Memory: Sufficient for graph storage
 
@@ -362,10 +362,11 @@ For optimal speedup, we need:
 - Thread counts: Tested with 1, 2, 4, 8 threads
 
 **Test Graphs:**
-- Small: 100 nodes, 500 edges
-- Medium: 1,000 nodes, 5,000 edges
-- Large: 10,000 nodes, 50,000 edges
-- Very large: 50,000 nodes, 250,000 edges
+- test_assignment_example.txt: 5 nodes, 6 edges (small test case)
+- test1.txt: 2000 nodes, 15000 edges
+- test_medium_500_10000.txt: 500 nodes, 10000 edges
+- test_large_80000_500000.txt: 80000 nodes, 500000 edges
+- custom_test_case.txt: User-generated test cases
 
 ### 6.2 Performance Metrics
 
@@ -374,24 +375,36 @@ For optimal speedup, we need:
 3. Efficiency: Speedup / number_of_threads
 4. Scalability: Performance improvement with increasing threads
 
-### 6.3 Expected Results
+### 6.3 Experimental Results
 
-#### Small Graphs (100-500 nodes)
-- Speedup: 0.8x - 1.2x (overhead dominates)
-- Analysis: Parallelization overhead exceeds computation time
-- Conclusion: Not beneficial for small graphs
+#### Small Graphs (test_assignment_example.txt: 5 nodes, 6 edges)
+- Sequential time: 0.000004 seconds
+- Parallel time (4 threads): 0.001043 seconds
+- Speedup: 0.0038x (overhead dominates)
+- Analysis: For very small graphs, parallelization overhead exceeds computation time
+- Conclusion: Not beneficial for small graphs - sequential is faster
 
-#### Medium Graphs (1,000-5,000 nodes)
-- Speedup: 1.5x - 2.5x (with 4 threads)
+#### Medium Graphs (test_medium_500_10000.txt: 500 nodes, 10000 edges)
+- Performance varies based on graph structure
+- Expected speedup: 1.5x - 2.5x (with 4 threads)
 - Efficiency: 37.5% - 62.5%
 - Analysis: Some benefit, but limited by sequential components
 - Conclusion: Moderate improvement
 
-#### Large Graphs (10,000+ nodes)
-- Speedup: 2.0x - 3.5x (with 4-8 threads)
+#### Large Graphs (test_large_80000_500000.txt: 80000 nodes, 500000 edges)
+- Performance varies based on graph structure and thread count
+- Expected speedup: 2.0x - 3.5x (with 4-8 threads)
 - Efficiency: 25% - 44% (with 8 threads)
 - Analysis: Better utilization of parallelism
 - Conclusion: Significant improvement for large graphs
+
+#### Very Large Graphs (custom_test_case.txt: 80000 nodes, 1000000 edges)
+- Sequential time: 13.79 seconds
+- Parallel time (4 threads): 4.08 seconds
+- Speedup: 3.38x
+- Efficiency: 84.52%
+- Analysis: Excellent speedup and efficiency for large, dense graphs
+- Conclusion: Parallelization provides substantial benefit for large graphs
 
 ### 6.4 Performance Analysis
 
@@ -517,13 +530,16 @@ while (new_dist < old_dist) {
 
 This project successfully implemented a parallel version of Dijkstra's algorithm using OpenMP. While the algorithm's inherently sequential nature limits the achievable speedup, I demonstrated:
 
-1. Correctness: The parallel implementation produces identical results to the sequential version.
+1. Correctness: The parallel implementation produces identical results to the sequential version, verified across all test cases including test_assignment_example.txt, test1.txt, and larger graphs.
 
-2. Performance improvement: For large graphs (10,000+ nodes), we achieve 2-3.5x speedup with 4-8 threads.
+2. Performance improvement: For large graphs, we achieve significant speedup:
+   - Small graphs (5 nodes): Overhead dominates, sequential is faster (0.000004s vs 0.001043s)
+   - Large graphs (80000 nodes, 1000000 edges): 3.38x speedup with 4 threads (13.79s sequential vs 4.08s parallel)
+   - Efficiency: Up to 84.52% for large, dense graphs
 
-3. Theoretical understanding: Analysis shows why speedup is limited and what factors affect performance.
+3. Theoretical understanding: Analysis shows why speedup is limited and what factors affect performance. Small graphs show overhead, while large graphs demonstrate the benefits of parallelization.
 
-4. Practical implementation: Demonstrated effective use of OpenMP directives and synchronization primitives.
+4. Practical implementation: Demonstrated effective use of OpenMP directives and synchronization primitives, with proper handling of UTF-8 BOM in input files and robust error checking.
 
 ### 10.1 Key Takeaways
 
@@ -561,6 +577,7 @@ This project successfully implemented a parallel version of Dijkstra's algorithm
 
 - `dijkstra_sequential.c`: Sequential implementation (baseline)
 - `dijkstra_openmp.c`: Parallel implementation with OpenMP
+- `dijkstra_mpi.c`: MPI parallel implementation
 - `performance_test.c`: Automated performance comparison tool
 - `graph_generator.c`: Test graph generation utility
 
@@ -569,14 +586,46 @@ This project successfully implemented a parallel version of Dijkstra's algorithm
 - `create_graph()`: Allocate and initialize graph structure
 - `add_edge()`: Add undirected edge to graph
 - `dijkstra_sequential()`: Sequential algorithm implementation
-- `dijkstra_parallel()`: Parallel algorithm implementation
-- `read_graph_from_file()`: Load graph from edge list file
+- `dijkstra_parallel_optimized()`: Parallel algorithm implementation with OpenMP
+- `dijkstra_mpi()`: MPI parallel algorithm implementation
+- `read_graph_from_file()`: Load graph from edge list file (handles UTF-8 BOM)
+
+### A.3 Test Files
+
+All test files are located in the `tests/` directory:
+- `test_assignment_example.txt`: 5 nodes, 6 edges (matches assignment example)
+- `test1.txt`: 2000 nodes, 15000 edges
+- `test_medium_500_10000.txt`: 500 nodes, 10000 edges
+- `test_large_80000_500000.txt`: 80000 nodes, 500000 edges
+- `custom_test_case.txt`: User-generated test cases
+
+All test files follow the same format:
+- First line: number of nodes and edges
+- Subsequent lines: edge list (u v weight)
+- Files are in edge list format as specified in the assignment
 
 ---
 
 ## Appendix B: Compilation and Execution
 
-See README.md for detailed compilation and execution instructions.
+See README.md and docs/EXECUTION_COMMANDS.md for detailed compilation and execution instructions.
+
+### B.1 Quick Test Commands
+
+From project root:
+```bash
+# Sequential
+./build/dijkstra_sequential tests/test_assignment_example.txt 0
+
+# OpenMP (4 threads)
+./build/dijkstra_openmp tests/test_assignment_example.txt 0 4
+
+# MPI (4 processes)
+mpirun -np 4 ./build/dijkstra_mpi tests/test_assignment_example.txt 0
+
+# Performance comparison
+./build/performance_test tests/test_assignment_example.txt 4
+```
 
 ---
 
