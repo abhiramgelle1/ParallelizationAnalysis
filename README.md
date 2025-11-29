@@ -1,11 +1,10 @@
 # Parallel Dijkstra's Algorithm Implementation
 
-This project implements parallel versions of Dijkstra's shortest path algorithm for a parallel algorithms course assignment. It includes sequential, OpenMP, and MPI implementations.
+This project implements parallel versions of Dijkstra's shortest path algorithm. It includes sequential, OpenMP, and MPI implementations.
 
 ## Project Structure
 
 ```
-parallel-algorthims-programming-assignment/
 ├── src/                    # Source code files
 │   ├── graph_generator.c
 │   ├── dijkstra_sequential.c
@@ -13,47 +12,20 @@ parallel-algorthims-programming-assignment/
 │   ├── dijkstra_mpi.c
 │   ├── performance_test.c
 │   └── Makefile
-├── docs/                   # Documentation
-│   ├── Report.md          # Analysis report
+├── docs/                  
+│   ├── Report.md          
 │   ├── EXECUTION_COMMANDS.md
-│   └── Programming Assignment.pdf
-├── tests/                  # Test graph files
+│   └── Programming Assignment.pdf     # Given Assignment taken from iCollege 
+├── tests/                  
 │   ├── test_assignment_example.txt
 │   ├── test1.txt
 │   ├── test_medium_500_10000.txt
 │   ├── test_large_80000_500000.txt
 │   └── custom_test_case.txt
-├── scripts/                # Test and comparison scripts
+├── scripts/                
 │   ├── test_script.sh
 │   └── compare_all.sh
 └── build/                  # Compiled executables (created after compilation)
-```
-
-## Quick Start
-
-First, navigate to the source directory:
-
-```bash
-cd src
-```
-
-Then compile everything:
-
-```bash
-make
-```
-
-This will create all the executables in the `../build/` directory.
-
-To run a quick test:
-
-```bash
-# From src directory
-make test
-
-# Or manually from project root
-./build/dijkstra_sequential tests/test_assignment_example.txt 0
-./build/dijkstra_openmp tests/test_assignment_example.txt 0 4
 ```
 
 ## Compilation
@@ -63,20 +35,18 @@ From the src directory:
 ```bash
 cd src
 
+# Clean build files
+make clean
+
 # Compile all (OpenMP)
 make
 
 # Compile MPI version (requires MPI)
 make mpi
 
-# Clean build files
-make clean
-
-# Run quick test
-make test
 ```
 
-If you prefer manual compilation:
+Only If you prefer manual compilation: [Otherwise, IGNORE]
 
 ```bash
 cd src
@@ -138,23 +108,6 @@ chmod +x compare_all.sh
 
 For complete command reference, see `docs/EXECUTION_COMMANDS.md`.
 
-## Testing
-
-Quick test:
-
-```bash
-cd src
-make test
-```
-
-Full test suite:
-
-```bash
-cd scripts
-chmod +x test_script.sh
-./test_script.sh
-```
-
 Performance comparison:
 
 ```bash
@@ -168,9 +121,7 @@ This project implements three versions of Dijkstra's algorithm:
 
 1. Sequential - Baseline implementation
 2. OpenMP - Shared-memory parallelism (primary implementation)
-3. MPI - Distributed-memory parallelism (alternative implementation)
-
-All implementations use the same input format (edge list), produce identical results (correctness verified), and can use the same test graph files.
+3. MPI - Distributed-memory parallelism (alternative implementation [I haven't used it in performace analysis but can view execution time using commands mentioned above])
 
 ## Prerequisites
 
@@ -195,32 +146,13 @@ Documentation (docs/):
 - `EXECUTION_COMMANDS.md` - Complete command reference
 
 Test Files (tests/):
-- `test_assignment_example.txt` - 5 nodes, 6 edges (matches assignment example)
+- `test_assignment_example.txt` - 5 nodes, 6 edges (taken from the example given in assignment. Kept file in /docs/)
 - `test1.txt` - 2000 nodes, 15000 edges
 - `test_medium_500_10000.txt` - 500 nodes, 10000 edges
 - `test_large_80000_500000.txt` - 80000 nodes, 500000 edges
-- `custom_test_case.txt` - User-generated test cases
+- `custom_test_case.txt` - User-generated test case
 - Generate your own with `graph_generator`
 
 Scripts (scripts/):
 - `test_script.sh` - Automated testing script
 - `compare_all.sh` - Comparison tool for all implementations
-
-## Assignment Requirements
-
-The project includes:
-- Sequential Dijkstra implementation
-- Parallel Dijkstra (OpenMP)
-- Alternative implementation (MPI)
-- Graph generator
-- Performance testing tools
-- Comprehensive documentation
-- Execution instructions
-- Analysis report with proofs
-
-## Troubleshooting
-
-See `docs/EXECUTION_COMMANDS.md` for:
-- Platform-specific setup
-- Common errors and solutions
-- Compilation issues
