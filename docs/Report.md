@@ -2,7 +2,6 @@
 
 **Name:** Abhiram Gelle  
 **Panther ID:** 002850818  
-**Course:** Parallel Algorithms  
 
 ---
 
@@ -103,6 +102,6 @@ I successfully implemented parallel Dijkstra's using OpenMP. The results demonst
 1. **Break-even point:** Around 40,000 nodes - parallelization becomes beneficial
 2. **Scalability:** Speedup remains consistent across different large graph sizes, indicating good scalability
 3. **Efficiency:** Decreases slightly for very large graphs due to increased synchronization overhead
-4. **Practical recommendation:** Use parallel version for graphs with 40,000+ nodes; use sequential for smaller graphs
+4. **Practical recommendation:** Use parallel version for graphs with higher nodes; use sequential for smaller graphs
 
 The implementation successfully demonstrates that parallelization effectiveness depends on problem size - small problems suffer from overhead, while large problems benefit significantly from parallel execution.
