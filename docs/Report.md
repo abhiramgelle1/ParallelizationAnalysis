@@ -2,7 +2,7 @@
 
 **Name:** Abhiram Gelle  
 **Panther ID:** 002850818  
-**Course:** Parallel Algorithms
+**Course:** Parallel Algorithms  
 
 ---
 
@@ -22,25 +22,32 @@ I parallelized Dijkstra's algorithm using OpenMP. Since the algorithm processes 
 
 ![Compilation Output](images/compilation_output.png)
 
-### Small Graph Results (5 nodes, 6 edges)
+### Performance Results Summary
 
 ![Performance Test - Small Graph](images/performance_test_small_graph.png)
-
-| Metric | Sequential | Parallel (4 threads) | Speedup | Efficiency |
-|--------|------------|----------------------|---------|------------|
-| Time | 0.000001s | 0.000291s | 0.0028x | 0.07% |
-
-**Analysis:** Parallel version is slower due to overhead exceeding computation time.
-
-### Large Graph Results (80000 nodes, 1000000 edges)
-
 ![Performance Test - Large Graph](images/performance_test_large_graph.png)
 
-| Metric | Sequential | Parallel (4 threads) | Speedup | Efficiency |
-|--------|------------|----------------------|---------|------------|
-| Time | 13.79s | 4.08s | 3.38x | 84.52% |
+| Graph Size | Nodes | Edges | Sequential Time | Parallel Time (4 threads) | Speedup | Efficiency |
+|------------|-------|-------|-----------------|--------------------------|---------|------------|
+| Small | 5 | 6 | 0.000001s | 0.000291s | 0.0028x | 0.07% |
+| Medium | 40,000 | 500,000 | 3.22s | 0.88s | 3.64x | 91.01% |
+| Large | 80,000 | 1,000,000 | 13.79s | 4.08s | 3.38x | 84.52% |
+| Very Large | 150,000 | 1,000,000 | 51.13s | 15.65s | 3.27x | 81.68% |
 
-**Analysis:** Excellent speedup with high efficiency. Overhead becomes negligible for large graphs.
+### Analysis
+
+**Small Graphs (5 nodes):** Parallel version is 291x slower due to overhead (thread creation, synchronization) exceeding computation time. Efficiency of 0.07% shows parallelization is counterproductive.
+
+**Medium to Very Large Graphs (40K-150K nodes):** Consistent performance improvement:
+- Speedup: 3.27x - 3.64x (near-linear for 4 threads)
+- Efficiency: 81.68% - 91.01% (excellent utilization)
+- Overhead becomes negligible as graph size increases
+
+**Key Observations:**
+1. **Break-even point:** Around 40,000 nodes - below this, sequential is faster
+2. **Scalability:** Speedup remains consistent (3.2x-3.6x) across different large graph sizes
+3. **Efficiency trend:** Slightly decreases with very large graphs (81.68% vs 91.01%) due to increased synchronization overhead
+4. **Optimal range:** Medium to large graphs (40K-80K nodes) show best efficiency (84-91%)
 
 ### Implementation Comparison
 
@@ -53,8 +60,6 @@ All implementations produce identical results, confirming correctness:
 | Sequential | 0.000004s |
 | OpenMP (4 threads) | 0.001043s |
 | MPI (1 process) | 0.000026s |
-
-**Key Finding:** Parallelization only helps for large graphs. Small graphs run faster sequentially.
 
 ---
 
@@ -85,4 +90,19 @@ All implementations produce identical results, confirming correctness:
 
 ## Conclusion
 
-I successfully implemented parallel Dijkstra's using OpenMP. Results show 3.38x speedup for large graphs (84.52% efficiency) but slower performance for small graphs due to overhead. This demonstrates that parallelization effectiveness depends on problem size and algorithm characteristics.
+I successfully implemented parallel Dijkstra's using OpenMP. The results demonstrate clear patterns:
+
+**For Small Graphs (< 10 nodes):** Sequential is faster. Overhead dominates, making parallelization counterproductive (0.07% efficiency).
+
+**For Medium to Very Large Graphs (40K-150K nodes):** Parallelization provides significant benefits:
+- Consistent 3.2x-3.6x speedup with 4 threads
+- High efficiency (81-91%), showing effective use of parallel resources
+- Best efficiency achieved with medium-large graphs (40K-80K nodes)
+
+**Key Findings:**
+1. **Break-even point:** Around 40,000 nodes - parallelization becomes beneficial
+2. **Scalability:** Speedup remains consistent across different large graph sizes, indicating good scalability
+3. **Efficiency:** Decreases slightly for very large graphs due to increased synchronization overhead
+4. **Practical recommendation:** Use parallel version for graphs with 40,000+ nodes; use sequential for smaller graphs
+
+The implementation successfully demonstrates that parallelization effectiveness depends on problem size - small problems suffer from overhead, while large problems benefit significantly from parallel execution.

@@ -35,6 +35,10 @@ Project structure:
    - chmod +x compare_all.sh
    - ./compare_all.sh ../tests/test_assignment_example.txt 0 4 4
 
+   Also, To test performance and efficiency
+   - From project root:
+   - ./build/performance_test tests/test_assignment_example.txt 4
+
 6. Run automated regression tests
    - From project root: cd scripts
    - chmod +x test_script.sh
