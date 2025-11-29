@@ -317,6 +317,19 @@ For optimal speedup, we need:
 
 ## 5. Implementation Details
 
+### 5.0 Compilation and Build Process
+
+![Compilation Output](images/compilation_output.png)
+
+The project uses a Makefile for building all executables. The compilation process includes:
+- Graph generator: Compiled with standard GCC flags
+- Sequential implementation: Compiled with optimization flags (-O3)
+- OpenMP implementation: Compiled with OpenMP support (-fopenmp)
+- MPI implementation: Compiled with MPI compiler (mpicc)
+- Performance test: Compiled with OpenMP support
+
+All executables are placed in the `build/` directory, which is automatically created if it doesn't exist. The Makefile includes checks for OpenMP and MPI availability, providing helpful error messages if dependencies are missing.
+
 ### 5.1 Data Structures
 
 - Graph representation: Adjacency list (array of edge arrays)
@@ -378,11 +391,19 @@ For optimal speedup, we need:
 ### 6.3 Experimental Results
 
 #### Small Graphs (test_assignment_example.txt: 5 nodes, 6 edges)
-- Sequential time: 0.000004 seconds
-- Parallel time (4 threads): 0.001043 seconds
-- Speedup: 0.0038x (overhead dominates)
-- Analysis: For very small graphs, parallelization overhead exceeds computation time
-- Conclusion: Not beneficial for small graphs - sequential is faster
+
+![Performance Test - Small Graph](images/performance_test_small_graph.png)
+
+Performance test results for the assignment example graph:
+- Sequential time: 0.000001 seconds
+- Parallel time (4 threads): 0.000291 seconds
+- Speedup: 0.0028x (overhead dominates)
+- Efficiency: 0.07%
+- Correctness: PASSED
+
+Analysis: For very small graphs, parallelization overhead exceeds computation time. The efficiency of 0.07% indicates that the parallel version is actually slower than sequential due to thread creation, synchronization, and critical section overhead being larger than the actual computation time.
+
+Conclusion: Not beneficial for small graphs - sequential is faster. This demonstrates that parallelization is only effective when the computation time is large enough to justify the overhead.
 
 #### Medium Graphs (test_medium_500_10000.txt: 500 nodes, 10000 edges)
 - Performance varies based on graph structure
@@ -399,12 +420,19 @@ For optimal speedup, we need:
 - Conclusion: Significant improvement for large graphs
 
 #### Very Large Graphs (custom_test_case.txt: 80000 nodes, 1000000 edges)
-- Sequential time: 13.79 seconds
-- Parallel time (4 threads): 4.08 seconds
-- Speedup: 3.38x
+
+![Performance Test - Large Graph](images/performance_test_large_graph.png)
+
+Performance test results for a large, dense graph:
+- Sequential time: 13.790882 seconds
+- Parallel time (4 threads): 4.079405 seconds
+- Speedup: 3.3806x
 - Efficiency: 84.52%
-- Analysis: Excellent speedup and efficiency for large, dense graphs
-- Conclusion: Parallelization provides substantial benefit for large graphs
+- Correctness: PASSED
+
+Analysis: Excellent speedup and efficiency for large, dense graphs. The efficiency of 84.52% shows that the parallel implementation is making very good use of the 4 threads, with minimal overhead compared to the computation time.
+
+Conclusion: Parallelization provides substantial benefit for large graphs. This demonstrates that as graph size increases, the parallelization overhead becomes negligible compared to the computation time, resulting in near-linear speedup.
 
 ### 6.4 Performance Analysis
 
@@ -528,9 +556,13 @@ while (new_dist < old_dist) {
 
 ## 10. Conclusion
 
-This project successfully implemented a parallel version of Dijkstra's algorithm using OpenMP. While the algorithm's inherently sequential nature limits the achievable speedup, I demonstrated:
+![Implementation Comparison](images/implementation_comparison.png)
 
-1. Correctness: The parallel implementation produces identical results to the sequential version, verified across all test cases including test_assignment_example.txt, test1.txt, and larger graphs.
+This project successfully implemented a parallel version of Dijkstra's algorithm using OpenMP. The image above shows all three implementations (Sequential, OpenMP, and MPI) producing identical results for the test_assignment_example.txt file, confirming correctness across all implementations.
+
+While the algorithm's inherently sequential nature limits the achievable speedup, I demonstrated:
+
+1. Correctness: The parallel implementation produces identical results to the sequential version, verified across all test cases including test_assignment_example.txt, test1.txt, and larger graphs. All implementations (sequential, OpenMP, and MPI) produce the same shortest path distances.
 
 2. Performance improvement: For large graphs, we achieve significant speedup:
    - Small graphs (5 nodes): Overhead dominates, sequential is faster (0.000004s vs 0.001043s)
